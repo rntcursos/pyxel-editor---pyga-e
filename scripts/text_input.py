@@ -11,7 +11,7 @@ class Text_input(pygame.sprite.Sprite):
         self.field_color = [220,220,220]
         pygame.draw.rect(self.surf, self.field_color, self.field_rect)
 
-        self.value = ""
+        self.value = "8"
         self.active = False
 
         self.font = pygame.font.Font(None, 20)

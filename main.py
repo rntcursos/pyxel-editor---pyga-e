@@ -57,7 +57,8 @@ def color_select_func():
     tool_text.update_text("Tool: " + tools_name)
 
 def save_func():
-    canvas_save = pygame.transform.scale(canvas.image, [50, 50])
+    size = int(text_field_size.value)
+    canvas_save = pygame.transform.scale(canvas.image, [size, size])
     pygame.image.save(canvas_save, "assets/image.png")
 
 def fill_func():
@@ -89,6 +90,7 @@ def events():
     global pencil_size
     global pencil_color
     global tools_name
+    global resolution
     
     x = pygame.mouse.get_pos()[0] - canvas.rect.x
     y = pygame.mouse.get_pos()[1] - canvas.rect.y
@@ -99,9 +101,13 @@ def events():
 
     if tools_name == "pencil":
         if key[0]:
+            resolution = int(text_field_pixels.value)
+            pencil_size = canvas.image.get_width() / resolution
             Pixel(canvas.image, pencil_color, [click_x, click_y, pencil_size, pencil_size], all_pixels)
     elif tools_name == "eraser":
         if key[0]:
+            resolution = int(text_field_pixels.value)
+            pencil_size = canvas.image.get_width() / resolution
             Pixel(canvas.image, PRIMARY_COLOR, [click_x, click_y, pencil_size, pencil_size], all_pixels)
     elif tools_name == "color_select":
         for p in all_pixels:
@@ -113,7 +119,9 @@ def events():
 
 
     if key[1]:
-        canvas.rect.center = pygame.mouse.get_pos()
+        x = pygame.mouse.get_pos()[0]
+        y = pygame.mouse.get_pos()[1]
+        canvas.rect.topleft = (x - canvas.image.get_width() / 2, y - canvas.image.get_height() / 2)
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
