@@ -1,6 +1,6 @@
-#Pyxel Art Editor
+**Pyxel Art Editor**
 
-##Pyxel Art Editor é um editor de arte de pixel básico desenvolvido em Python com o uso da biblioteca Pygame.
+Pyxel Art Editor é um editor de arte de pixel básico desenvolvido em Python com o uso da biblioteca Pygame.
 
 **Como usar**
 
