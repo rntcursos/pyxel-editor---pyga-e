@@ -2,7 +2,7 @@ import pygame
 
 class Text_input(pygame.sprite.Sprite):
 
-    def __init__(self,rect,surf, groups):
+    def __init__(self,rect,surf, value,limit,types, groups):
         super().__init__(groups)
 
         self.surf = surf
@@ -11,7 +11,9 @@ class Text_input(pygame.sprite.Sprite):
         self.field_color = [220,220,220]
         pygame.draw.rect(self.surf, self.field_color, self.field_rect)
 
-        self.value = "8"
+        self.value = value
+        self.limit = limit
+        self.type = types
         self.active = False
 
         self.font = pygame.font.Font(None, 20)
@@ -43,8 +45,14 @@ class Text_input(pygame.sprite.Sprite):
                 self.value = self.value[:-1]
                 self.update_text()
 
-            if events.unicode.isnumeric() and len(self.value) < 2 and self.active:
-                self.value += events.unicode
-                self.update_text()
+            if self.type == "number":
+                if events.unicode.isnumeric() and len(self.value) < self.limit and self.active:
+                    self.value += events.unicode
+                    self.update_text()
+
+            if self.type == "text" and events.key != pygame.K_BACKSPACE:
+                if events.unicode and len(self.value) < self.limit and self.active:
+                    self.value += events.unicode
+                    self.update_text()
             
 

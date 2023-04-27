@@ -5,7 +5,7 @@ from scripts.pixel import Pixel
 from scripts.settings import *
 from scripts.text import Text
 from scripts.text_input import Text_input
-from scripts.ui import Ui
+from scripts.ui import Canvas, Ui
 
 pygame.init()
 
@@ -21,7 +21,7 @@ all_colors = pygame.sprite.Group()
 
 #Canvas Settings
 resolution = 80
-canvas = Ui((resolution,resolution),[0,0],PRIMARY_COLOR, ui_group)
+canvas = Canvas((resolution,resolution),[0,0],[255,255,255,0], ui_group)
 tools_bar = Ui((200, screen.get_height()), [0,0],SECONDARY_COLOR, ui_group)
 color_bar = Ui((screen.get_width(), 30), [0,0],PRIMARY_COLOR, ui_group)
 
@@ -35,11 +35,14 @@ tools_name = "pencil"
 #Texts
 tool_text = Text(20,"Tool: " + tools_name, "white", [40,186], ui_group)
 
-text_field_size = Text_input([40,140,128,30], tools_bar.image, ui_group)
+text_field_size = Text_input([40,140,128,30], tools_bar.image,"8",2,"number", ui_group)
 text_field_size_label = Text(20,"Image size", "white", [40,116], ui_group)
 
-text_field_pixels = Text_input([40,80,128,30], tools_bar.image, ui_group)
+text_field_pixels = Text_input([40,80,128,30], tools_bar.image,"8",2,"number", ui_group)
 text_field_pixels_label = Text(20,"Pixels", "white", [40,56], ui_group)
+
+text_field_name = Text_input([40,540,128,30], tools_bar.image,'name', 20,"text", ui_group)
+text_field_name_label = Text(20,"File Name", "white", [40,520], ui_group)
 
 def pencil_func():
     global tools_name
@@ -59,7 +62,7 @@ def color_select_func():
 def save_func():
     size = int(text_field_size.value)
     canvas_save = pygame.transform.scale(canvas.image, [size, size])
-    pygame.image.save(canvas_save, "assets/image.png")
+    pygame.image.save(canvas_save, text_field_name.value)
 
 def fill_func():
     global pencil_color
@@ -67,7 +70,7 @@ def fill_func():
     all_pixels.empty()
 
 def clear_func():
-    canvas.image.fill(PRIMARY_COLOR)
+    canvas.canvas_clean(canvas.image, canvas.rect)
     all_pixels.empty()
 
 pencil_button = Button("assets/brush.png",[40,210],pencil_func, ui_group)
@@ -108,7 +111,7 @@ def events():
         if key[0]:
             resolution = int(text_field_pixels.value)
             pencil_size = canvas.image.get_width() / resolution
-            Pixel(canvas.image, PRIMARY_COLOR, [click_x, click_y, pencil_size, pencil_size], all_pixels)
+            Pixel(canvas.image, [0,0,0,0], [click_x, click_y, pencil_size, pencil_size], all_pixels)
     elif tools_name == "color_select":
         for p in all_pixels:
             if p.rect.collidepoint(click_x, click_y):
@@ -130,13 +133,16 @@ def events():
 
         text_field_size.events_handle(event)
         text_field_pixels.events_handle(event)
+        text_field_name.events_handle(event)
         
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:
                 canvas.image = pygame.transform.scale(canvas.image, [canvas.image.get_width() * 2, canvas.image.get_height() * 2])
+                canvas.rect = canvas.image.get_rect()
                 pencil_size = canvas.image.get_width() / resolution
             elif event.button == 5:
                 canvas.image = pygame.transform.scale(canvas.image, [canvas.image.get_width() / 2, canvas.image.get_height() / 2])
+                canvas.rect = canvas.image.get_rect()
                 pencil_size = canvas.image.get_width() / resolution
             
             
